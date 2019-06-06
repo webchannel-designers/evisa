@@ -1,0 +1,1 @@
+<?php echo convert_lang('Your request has been submitted.',$this->alphalocalization); ?>

@@ -1,0 +1,37 @@
+/****** Rating Starts *****/
+@import url(http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+fieldset, label { margin: 0; padding: 0; }
+
+.rating2 { 
+    border: none;
+    float: left;
+}
+
+.rating2 > input { display: none; } 
+.rating2 > label:before { 
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+}
+
+.rating2 > .half:before { 
+    content: "\f089";
+    position: absolute;
+}
+
+.rating2 > label { 
+    color: #ddd !important; 
+    float: right; 
+}
+
+.rating2 > input:checked ~ label, 
+.rating2:not(:checked) > label:hover,  
+.rating2:not(:checked) > label:hover ~ label { color: #FFD700 !important;  }
+
+.rating2 > input:checked + label:hover, 
+.rating2 > input:checked ~ label:hover,
+.rating2 > label:hover ~ input:checked ~ label, 
+.rating2 > input:checked ~ label:hover ~ label { color: #FFED85 !important;  } 

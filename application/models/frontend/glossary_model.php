@@ -1,0 +1,117 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+class Glossary_model extends CI_Model {
+    function __construct()
+    {
+        parent::__construct();
+		$this->alphabet_table_name='alphabet_desc';		
+		$this->table_name='glossary';
+    }
+	
+	function get_array()
+	{
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$query = $this->db->get($this->table_name);
+        return $query->result_array();
+	}
+	
+	function get_array_limit($limit)
+	{
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$this->db->limit($limit);
+		$query = $this->db->get($this->table_name);
+        return $query->result_array();
+	}
+	
+	function load($id)
+	{
+		$id=$this->db->escape_str($id);
+		$cond=array('id'=>$id);
+		$this->db->where($cond);
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$query = $this->db->get($this->table_name);
+        return $query->row();
+	}
+	
+	function get_row_cond($cond)
+	{
+		$this->db->where($cond);
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$query = $this->db->get($this->table_name);
+        return $query->row();
+	}
+	
+	function insert($data)
+	{
+		$this->db->insert($this->table_name,$data);
+		return $this->db->insert_id();
+	}
+	
+	function update($data,$cond)
+	{
+		return $this->db->update($this->table_name,$data,$cond);
+	}
+	
+	function delete($cond)
+	{
+		return $this->db->delete($this->table_name,$cond);
+	}
+	
+	function get_pagination_count($cond='')
+    {
+        $this->db->select('*');
+		if(is_array($cond) && count($cond)>0){
+		$this->db->where($cond);
+		}
+		$this->db->where('language',$this->session->userdata('front_language'));
+        $this->db->from($this->table_name);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+	
+	function get_pagination($num, $offset, $cond='')
+    {
+        $this->db->select('*');
+		if(is_array($cond) && count($cond)>0){
+		$this->db->where($cond);
+		}
+		$this->db->where('language',$this->session->userdata('front_language'));
+        $this->db->from($this->table_name);
+		$this->db->limit($num, $offset);
+        $query = $this->db->get();
+        return $query->result_array();
+    }	
+	
+	function get_featured($limit='2')
+	{
+		$this->db->limit($limit);
+		$this->db->where('status','Y');
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$this->db->order_by('id','random');
+		$query = $this->db->get($this->table_name);
+        return $query->result_array();
+	}
+	
+	
+	function get_active($key,$keyword)
+	{
+		if($key!=''){
+			$this->db->like('question', $key, 'after'); 
+		}
+		
+		if($keyword!=''){
+			$this->db->like('question', $keyword, 'both'); 
+			$this->db->or_like('answer', $keyword, 'both'); 
+		}		
+		$this->db->where('status','Y');
+		$this->db->where('language',$this->session->userdata('front_language'));
+		$query = $this->db->get($this->table_name);
+        return $query->result_array();
+	}
+	function get_alphabet()
+	{
+		$this->db->where('language',$this->session->userdata('admin_language'));
+		$query = $this->db->get($this->alphabet_table_name);
+        return $query->result_array();
+	}	
+	
+}

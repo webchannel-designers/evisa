@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteBase /projects/horton-tech/www/
+RewriteCond $1 !^(index\.php|images|public|robots\.txt|css)
+RewriteRule ^(.*)$ ./index.php/$1 [L]
+</IfModule>
