@@ -1,8 +1,7 @@
 <?php  $coid=$this->session->userdata('couid');?>
 <section class="section-spotlight">
-      <div class="home-slider owl-carousel">
-      
-          
+      <div class="home-slider owl-carousel">     
+        
         <div class="item"><img class="img-fluid big-banner" src="http://www.webchannel.co/projects/evisa/www/public/uploads/banners/Visas22.jpg" alt="Banner1"/>
         <img class="img-fluid mobile-banner" src="http://www.webchannel.co/projects/evisa/www/public/uploads/banners/Visas13.jpg" alt="Banner1"/>
           <div class="caption text-left">
@@ -102,8 +101,9 @@
                     <div class="col-md-4">
                       <div class="total" id="tot">
                         <h5>Total</h5>
-                        <h5></h5>
+                        <h5><span id="gtotal"><?php echo @$frmdata->order_total; ?></span></h5>
                       </div>
+                      <input type="hidden" id="gtot" name="gtot"  value="<?php echo @$frmdata->order_total; ?>"/>
                     </div>
                 </div>
               </div>
@@ -294,16 +294,9 @@
                     </div>
                   </div>
                 </div>
-
               </div>
-
-              <a href="" class="btn orange btn-submit">Continue to Checkout</a>
-              
-
+              <a href="" class="btn orange btn-submit">Continue to Checkout</a>           
             </div>
           </div>
-        </div>
-
-
-        
+        </div>      
     </section>

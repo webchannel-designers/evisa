@@ -277,6 +277,10 @@
  $("#addobj4").click(function(){ 
 var num4=$('.applicant-form').length+1;
  $("#hi").append("<div class='applicant-form' id='applicant'><div class='title'><i class='fa fa-user-plus' aria-hidden='true'></i><h3>Applicant #"+num4+"</h3></div><div class='row'><div class='col-md-6 col-lg-3'><input class='form-control' type='text' name='full_name[]' placeholder='First and Middle Name'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='lname[]' placeholder='Last Name'> </div> <div class='col-md-6 col-lg-3'> </div> <div class='col-md-6 col-lg-3'> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='nationality[]' id=''><option>Nationality (As per Passport)</option> </select> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='birth_country[]' id=''> <option>Country of birth</option> </select> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='dob[]' placeholder='Date of birth'> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='gender[]' id=''> <option>Gender</option> </select> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='visa_type[]' id=''><option>Visa Type</option> </select> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='pp_no[]' placeholder='Passport Number'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' issue_date[] placeholder='Date of issue'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' exp_date[] placeholder='Date of expiry'> </div> </div> </div>");
+ $("#qty").val(num4);
+ tot=parseInt($('#qty').val())*parseInt($('#amt').val());
+  document.getElementById('gtotal').innerHTML='AED '+tot;
+  document.getElementById('gtot').value=tot;
 }); 
 
 
@@ -306,7 +310,9 @@ function populate1(val)
       $.post("<?php echo base_url(); ?><?php echo $this->session->userdata('front_language'); ?>/services/load", {serid: ""+val+""}, function(data){        
               if(data.length >0) {
                 $('#tot').html(data);
-                $('#small').trigger('click');
+                 tot=parseInt($('#qty').val())*parseInt($('#amt').val());
+  document.getElementById('gtotal').innerHTML='AED '+tot;
+  document.getElementById('gtot').value=tot;
               }
             });
       return false;     
