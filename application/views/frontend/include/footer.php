@@ -286,8 +286,7 @@ function populate(val)
 								$('#small').trigger('click');
 							}
 						});
-			return false;
-			
+			return false;			
 }
 $( document ).ready(function() {
 	<?php if(@$_REQUEST['nationality']!="") { ?>

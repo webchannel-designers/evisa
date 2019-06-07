@@ -159,7 +159,7 @@ class Checkout extends Visafront_Controller {
 		//$home['events']=$this->events_model->get_array_limit(2);
 		
 		//print_r($home['contacts']);exit;
-		$frontcontent=$this->load->view('frontend/register/register',$home,true);
+		$frontcontent=$this->load->view('frontend/register/register1',$home,true);
 		//$main['contents']=$this->frontcontent($frontcontent,true);
 		
 		$main['contents']=$frontcontent;
@@ -182,7 +182,7 @@ class Checkout extends Visafront_Controller {
 		
 		$vatamt=$total*5/100;
 		
-		$maindata=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa'),'no_of_visas'=>$this->input->post('quantity'),'local_guarantee '=>$this->input->post('relative'),'order_status'=>'New','terms'=>$this->input->post('terms'));
+		$maindata=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa'),'no_of_visas'=>$this->input->post('quantity'),'local_guarantee'=>$this->input->post('relative'),'order_status'=>'New','terms'=>$this->input->post('terms'));
  		$descdata = "";
 		if( $this->session->userdata('ordId') != '')
 		{

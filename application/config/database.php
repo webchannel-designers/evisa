@@ -47,9 +47,9 @@
 $active_group = 'default';
 $active_record = TRUE;
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'webchaco_evisa';
-$db['default']['password'] = 'yCw2#T54[X$0';
-$db['default']['database'] = 'webchaco_evisa';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
+$db['default']['database'] = 'evisa';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
