@@ -151,7 +151,11 @@ class Services extends Visafront_Controller {
 		
 		$contents=$this->services_model->load($_POST['serid']);
 		
-		echo '<input type="hidden" name="amt" id="amt" value="'.$contents->price.'"><div class="col-md-8"><h1>'.strip_tags($contents->title).'</h1></div><div class="col-md-4 step-price text-right"><span>AED '.$contents->price.'</span></div>';
+		// echo '<input type="hidden" name="amt" id="amt" value="'.$contents->price.'"><div class="col-md-8"><h1>'.strip_tags($contents->title).'</h1></div><div class="col-md-4 step-price text-right"><span>AED '.$contents->price.'</span></div>';
+
+		echo '<input type="hidden" name="amt" id="amt" value="'.$contents->price.'">
+		 <h5>Total</h5><h5>AED '.$contents->price;'</h5>';
+          
 	}
 
 	public function view($id='')

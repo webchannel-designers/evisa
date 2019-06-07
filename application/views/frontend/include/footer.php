@@ -273,8 +273,16 @@
 <script src="<?php echo base_url('public/frontend/js/jquery.cookie.js'); ?>"></script> 
 
 <script src="<?php echo base_url('public/frontend/js/main.js'); ?>"></script> 
+<script type="text/javascript">
+ $("#addobj4").click(function(){ 
+var num4=$('.applicant-form').length+1;
+ $("#hi").append("<div class='applicant-form' id='applicant'><div class='title'><i class='fa fa-user-plus' aria-hidden='true'></i><h3>Applicant #"+num4+"</h3></div><div class='row'><div class='col-md-6 col-lg-3'><input class='form-control' type='text' name='full_name[]' placeholder='First and Middle Name'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='lname[]' placeholder='Last Name'> </div> <div class='col-md-6 col-lg-3'> </div> <div class='col-md-6 col-lg-3'> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='nationality[]' id=''><option>Nationality (As per Passport)</option> </select> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='birth_country[]' id=''> <option>Country of birth</option> </select> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='dob[]' placeholder='Date of birth'> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='gender[]' id=''> <option>Gender</option> </select> </div> <div class='col-md-6 col-lg-3'> <select class='form-control' name='visa_type[]' id=''><option>Visa Type</option> </select> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' name='pp_no[]' placeholder='Passport Number'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' issue_date[] placeholder='Date of issue'> </div> <div class='col-md-6 col-lg-3'> <input class='form-control' type='text' exp_date[] placeholder='Date of expiry'> </div> </div> </div>");
+}); 
+
+
+</script>
 <script>
-<?php if(@$_POST['visa_type']) { ?>
+<?php if(@$_POST['visa_type']) { ?> 
 populate('<?php echo (@$_POST['visa_type'])?@$_POST['visa_type']:@$frmdata->visa_type; ?>')
 <?php } ?>
 function populate(val)
@@ -288,7 +296,28 @@ function populate(val)
 						});
 			return false;			
 }
+
+function populate1(val)
+{
+  //alert(val);
+  var visa1=$('#type_visa option:selected').text();  
+  var visa=visa1.replace(/\s+/g, ' ').trim();
+  $("#visa_type").val(visa);
+      $.post("<?php echo base_url(); ?><?php echo $this->session->userdata('front_language'); ?>/services/load", {serid: ""+val+""}, function(data){        
+              if(data.length >0) {
+                $('#tot').html(data);
+                $('#small').trigger('click');
+              }
+            });
+      return false;     
+}
+
+
 $( document ).ready(function() {
+
+var visa_id=$('#type_visa option:selected').val();
+populate1(visa_id);
+
 	<?php if(@$_REQUEST['nationality']!="") { ?>
 	$("#second").hide();
 		$("#coucopy").html("Selected Nationality ("+$("#nationality option:selected").attr('name')+")<span class='change'>Change</span>");
@@ -842,3 +871,11 @@ function getform7()
 	});
 </script> 
 <?php } ?>
+    <script>
+  $(".time-inner").on('click', function(e){
+    var _t = $(this);
+    $(".time-inner").removeClass('on');
+    _t.addClass('on');
+    _t.find('input').prop('checked', true);
+  })
+</script>

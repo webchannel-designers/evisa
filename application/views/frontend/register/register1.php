@@ -1,3 +1,4 @@
+<?php  $coid=$this->session->userdata('couid');?>
 <section class="section-spotlight">
       <div class="home-slider owl-carousel">
       
@@ -6,7 +7,7 @@
         <img class="img-fluid mobile-banner" src="http://www.webchannel.co/projects/evisa/www/public/uploads/banners/Visas13.jpg" alt="Banner1"/>
           <div class="caption text-left">
             <p><p>
-	&nbsp; &nbsp;</p>
+  &nbsp; &nbsp;</p>
 </p>
           </div>
         </div>
@@ -82,27 +83,31 @@
 
               <div class="form-header">
                 <div class="row">
+                   <?php if(!in_array($coid,$nacs)){                
+                    ?>
                     <div class="col-md-4">
-                      <label for="">Visa Type</label>
-                      <select name="" id="">
-                        <option value="">14 Days Single Entry</option>
-                      </select>
+                      <label for="visa">Visa Type</label>
+                     <!--  <select name="" id="<?php echo $item['id']; ?>">                       
+                        <option value="<?php echo $item['id']; ?>" <?php if(@$frmdata->visa_type==$item['id'] or @$_POST['visa_type']==$item['id']) { ?> selected="selected"<?php } ?>"><?php echo strip_tags($item['title']); ?></option>
+                      </select> -->
+                      <input type="text" id="visa_type" value="">
                     </div>
                     <div class="col-md-4">
                       <label for="">No. Of Visa</label>
-                      <select name="" id="">
+                      <!-- <select name="" id="">
                         <option value="">1</option>
-                      </select>
+                      </select> -->
+                     <input class="quantity" type="text" name="quantity" id="qty" value="<?php if(@$frmdata->no_of_visas!="") { echo @$frmdata->no_of_visas; } else { echo 1;} ?>" />
                     </div>
                     <div class="col-md-4">
-                      <div class="total">
+                      <div class="total" id="tot">
                         <h5>Total</h5>
-                        <h5>AED 340</h5>
+                        <h5></h5>
                       </div>
                     </div>
                 </div>
               </div>
-
+              <div id="hi">
               <div class="applicant-form">
                 <div class="title">
                   <i class="fa fa-user-plus" aria-hidden="true"></i>
@@ -116,66 +121,7 @@
                   <div class="col-md-6 col-lg-3">
                     <input class="form-control" type="text" placeholder="Last Name">
                   </div>
-                  <div class="col-md-6 col-lg-3"></div>
-
-                  <div class="col-md-6 col-lg-3"></div>
-                  <div class="col-md-6 col-lg-3">
-                    <select class="form-control" name="" id="">
-                      <option>Nationality (As per Passport)</option>
-                    </select>
-                  </div>
-
-                  <div class="col-md-6 col-lg-3">
-                    <select class="form-control" name="" id="">
-                      <option>Country of birth</option>
-                    </select>
-                  </div>
-
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="Date of birth">
-                  </div>
-                  <div class="col-md-6 col-lg-3">
-                    <select class="form-control" name="" id="">
-                      <option>Gender</option>
-                    </select>
-                  </div>
-
-                  <div class="col-md-6 col-lg-3">
-                    <select class="form-control" name="" id="">
-                      <option>Visa Type</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="Passport Number">
-                  </div>
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="Date of issue">
-                  </div>
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="Date of expiry">
-                  </div>
-
-
-                </div>
-
-              </div>
-
-
-
-              <div class="applicant-form">
-                <div class="title">
-                  <i class="fa fa-user-plus" aria-hidden="true"></i>
-                  <h3>Applicant #2</h3>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="First and Middle Name">
-                  </div>
-                  <div class="col-md-6 col-lg-3">
-                    <input class="form-control" type="text" placeholder="Last Name">
-                  </div>
-                  <div class="col-md-6 col-lg-3">
+                    <div class="col-md-6 col-lg-3">
                     <input class="form-control" type="text" placeholder="Email address">
                   </div>
 
@@ -204,8 +150,32 @@
                   </div>
 
                   <div class="col-md-6 col-lg-3">
-                    <select class="form-control" name="" id="">
-                      <option>Visa Type</option>
+                    <select class="form-control" name="type_visa" id="type_visa" onchange="populate1(this.value)">
+                       <?php
+                foreach($services as $item) {  
+                $countries3n=array(12,30,215,86,94,98,118,124,129,139,41,161,164,169,197,199,200,202);
+                $countries2n=array(4);
+                $countries1n=array(148,154);
+                if(in_array($coid,$countries3n)) {
+                $serarray=array(15,18,19);
+                }
+                if(in_array($coid,$countries2n)) {
+                $serarray=array(15,17,18,19);
+                }
+                if(in_array($coid,$countries1n)) {
+                $serarray=array(13,14,15,17,18,19);
+                }
+                if(count(@$serarray)>0)
+                {
+                if(in_array($item['id'],@$serarray))
+                {
+                         ?>
+                        <option value="<?php echo $item['id']; ?>" <?php if(@$frmdata->visa_type==$item['id'] or @$_POST['visa_type']==$item['id']) { ?> selected="selected"<?php } ?>"><?php echo strip_tags($item['title']); ?></option>
+
+                         <?php } } else { if($item['id']!=17) { ?>
+
+                          <option value="<?php echo $item['id']; ?>" <?php if(@$frmdata->visa_type==$item['id'] or @$_POST['visa_type']==$item['id']) { ?> selected="selected"<?php } ?>"><?php echo strip_tags($item['title']); ?></option>
+                           <?php } } } } ?>
                     </select>
                   </div>
                   <div class="col-md-6 col-lg-3">
@@ -223,9 +193,112 @@
 
               </div>
 
-              <a href="" class="btn blue1 btn-submit"><i class="fa fa-user-plus" aria-hidden="true"></i> Add New Applicant</a>
+</div>
+
+              <!-- <div class="applicant-form" id="applicant">
+                <div class="title">
+                  <i class="fa fa-user-plus" aria-hidden="true"></i>
+                  <h3>Applicant #2</h3>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="First and Middle Name">
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="Last Name">
+                  </div>               
+                  <div class="col-md-6 col-lg-3">
+                    <select class="form-control" name="" id="">
+                      <option>Nationality (As per Passport)</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6 col-lg-3">
+                    <select class="form-control" name="" id="">
+                      <option>Country of birth</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="Date of birth">
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <select class="form-control" name="" id="">
+                      <option>Gender</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6 col-lg-3">
+                    <select class="form-control" name="" id="">
+                      <option>Visa Type</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="Passport Number">
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="Date of issue">
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input class="form-control" type="text" placeholder="Date of expiry">
+                  </div>
 
 
+                </div>
+
+              </div> -->
+
+              <a href="javascript:void(0);" class="btn blue2 btn-submit" id="addobj4"><i class="fa fa-user-plus" aria-hidden="true"></i> Add New Applicant</a>
+
+
+              <div class="guarantor-details row">
+                <div class="col-md-12">
+                  <h3>Guarantor Details</h3>
+                </div>
+                <div class="col-md-4">
+                  <input type="text" placeholder="Guarantor name" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" placeholder="Email address" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" placeholder="Mobile number" class="form-control">
+                </div>
+              </div>
+
+
+              <div class="time-option">
+                <div class="left">
+                  <h3>Processing Time</h3>
+                </div>
+
+                <div class="time">
+                  <div class="time-inner">
+                    <input type="radio" name="time" id="standard">
+                    <div class="time-text">
+                      <label for="standard">Standard Processing</label>
+                        <strong>7 Business days - UYC 1298.38/visa</strong>
+                        <span>service available 24/7, 7 days a week</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="time">
+                  <div class="time-inner">
+                    <input type="radio" name="time" id="rush">
+                    <div class="time-text">
+                      <label for="rush">Rush Processing</label>
+                        <strong>5 Business days - Add UYC 1112.89/visa</strong>
+                        <span>service available 24/7, 7 days a week</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <a href="" class="btn orange btn-submit">Continue to Checkout</a>
+              
 
             </div>
           </div>
