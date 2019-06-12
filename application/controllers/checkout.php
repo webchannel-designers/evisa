@@ -84,7 +84,7 @@ class Checkout extends Visafront_Controller {
 
 	}
 	
-	public function process2(){
+	public function process2old(){
         // Load the model
         
         $this->load->model('frontend/login_model');
@@ -161,8 +161,82 @@ class Checkout extends Visafront_Controller {
 		//print_r($home['contacts']);exit;
 		$frontcontent=$this->load->view('frontend/register/register1',$home,true);
 		//$main['contents']=$this->frontcontent($frontcontent,true);
+
+		// $this->form_validation->set_rules('fname', 'Your Name', 'required');
+		// $this->form_validation->set_rules('lname', 'Last Name', ''); 
+		// $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+		// $this->form_validation->set_rules('nationality', 'Nationality', 'required');
+ 	// 	$this->form_validation->set_rules('mobile', 'Mobile', 'required');
+		// $this->form_validation->set_rules('birth_country', 'Country Of birth', 'required');
+		// $this->form_validation->set_rules('gender', 'Gender', 'required');
+		// $this->form_validation->set_rules('type_visa', 'Visa Type', 'required'); 
+		// $this->form_validation->set_rules('passport_number', 'Passport number', 'required'); 
+		// $this->form_validation->set_rules('issue_date', 'Date of issue', 'required'); 
+		// $this->form_validation->set_rules('exp_date', 'Date of expiry', 'required'); 
+		// $this->form_validation->set_rules('guarantor-name', 'Guarantor name', 'required'); 
+		// $this->form_validation->set_rules('guarantor-email', 'Guarantor email address', 'required'); 
+		// $this->form_validation->set_rules('guarantor-mobile', 'Guarantor mobile number', 'required'); 
+		// $this->form_validation->set_rules('pros_time', 'Processing Time', 'required'); 
+		// $this->form_validation->set_error_delimiters('<span class="red">(', ')</span>');  
+		$main['contents']=$frontcontent;		
+		$main['header']=$this->frontheader();
+		$main['footer']=$this->frontfooter();
+		$main['meta']=$this->frontmetahead();
+		$this->load->view('frontend/main',$main);
 		
-		$main['contents']=$frontcontent;
+	}
+
+	public function process2($step="")
+	{
+		$home['nacs']=$nacs=array(1,5,22,32,33,35,38,39,55,61,62,70,71,74,81,82,96,109,123,132,137,141,142,162,166,168,173,178,188,192); $couid= $this->session->userdata('couid');
+		$p=$this->input->post()?$this->input->post():$this->input->get();   $this->session->set_userdata('couid',@$p['nationality']?$p['nationality']:$couid);//$this->session->userdata('couid')
+		if(in_array(@$p['nationality'],$nacs)){
+			 redirect('checkout/process/3/msg3');exit; 
+		}
+		$this->load->model('frontend/pages_model');
+		$this->load->model('frontend/countries_model');
+		$this->load->model('frontend/services_model');
+		$this->load->model('frontend/register_model');
+ 		if($this->session->userdata('ordId') != '')
+		{
+			$home['frmdata']=$frmdata=$this->register_model->load2($this->session->userdata('ordId'));
+			//$p['nationality']=$frmdata->applicant_nationality;
+		}$home['p']=$p;
+		$pagemeta=$this->pages_model->get_row_cond(array('key'=>'register'));
+		if($pagemeta->title!=''){$this->pagetitle=$pagemeta->title;}
+		if($pagemeta->short_desc!=''){$this->desc=$pagemeta->short_desc; }
+		if($pagemeta->keywords!=''){$this->keys=$pagemeta->keywords; }
+		if($pagemeta->banner_image!=''){$this->pagebannner=base_url('public/uploads/pages/'.$pagemeta->banner_image); }
+		if($pagemeta->banner_text!=''){$this->pagebannnertext=$pagemeta->banner_text; }
+		//$this->left_widgets=$this->widgets_model->get_pagewidgets($pagemeta->widgets);
+		$this->breadcrumbarr=array('/'=>$this->alphasettings['BREADCRUMB_START'],site_url('login/register') =>$this->pagetitle);
+		$this->load->model('frontend/register_model');
+		$home['contacts']=$this->register_model->get_active();
+		$home['countries'] = $this->countries_model->get_active();		
+		$home['services'] = $this->services_model->get_active();			
+		//$home['events']=$this->events_model->get_array_limit(2);
+		
+		//print_r($home['contacts']);exit;
+		$frontcontent=$this->load->view('frontend/register/step2',$home,true);
+		//$main['contents']=$this->frontcontent($frontcontent,true);
+
+		// $this->form_validation->set_rules('fname', 'Your Name', 'required');
+		// $this->form_validation->set_rules('lname', 'Last Name', ''); 
+		// $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+		// $this->form_validation->set_rules('nationality', 'Nationality', 'required');
+ 	// 	$this->form_validation->set_rules('mobile', 'Mobile', 'required');
+		// $this->form_validation->set_rules('birth_country', 'Country Of birth', 'required');
+		// $this->form_validation->set_rules('gender', 'Gender', 'required');
+		// $this->form_validation->set_rules('type_visa', 'Visa Type', 'required'); 
+		// $this->form_validation->set_rules('passport_number', 'Passport number', 'required'); 
+		// $this->form_validation->set_rules('issue_date', 'Date of issue', 'required'); 
+		// $this->form_validation->set_rules('exp_date', 'Date of expiry', 'required'); 
+		// $this->form_validation->set_rules('guarantor-name', 'Guarantor name', 'required'); 
+		// $this->form_validation->set_rules('guarantor-email', 'Guarantor email address', 'required'); 
+		// $this->form_validation->set_rules('guarantor-mobile', 'Guarantor mobile number', 'required'); 
+		// $this->form_validation->set_rules('pros_time', 'Processing Time', 'required'); 
+		// $this->form_validation->set_error_delimiters('<span class="red">(', ')</span>');  
+		$main['contents']=$frontcontent;		
 		$main['header']=$this->frontheader();
 		$main['footer']=$this->frontfooter();
 		$main['meta']=$this->frontmetahead();
@@ -172,23 +246,22 @@ class Checkout extends Visafront_Controller {
 	
 	public function insertvisa()
 	{
+		$this->session->set_userdata('ordId', '');
 		$this->load->model('frontend/register_model');
-		$this->load->model('frontend/services_model');
-		$date=date("Y-m-d", strtotime($this->input->post('traveldate')));
-		
-		$total=$this->input->post('gtot');
-		
-		$vatper=5;
-		
+		$this->load->model('frontend/services_model');       
+		$date=date("Y-m-d", strtotime($this->input->post('traveldate')));		
+		$total=$this->input->post('gtot');		
+		$vatper=5;		
 		$vatamt=$total*5/100;
-		
-		$maindata=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa'),'no_of_visas'=>$this->input->post('quantity'),'local_guarantee'=>$this->input->post('relative'),'order_status'=>'New','terms'=>$this->input->post('terms'));
+
+		$maindata=array('travel_date'=>$date,'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa_type'),'no_of_visas'=>$this->input->post('quantity'),'email'=>$this->input->post('email'),'mobile'=>$this->input->post('mobile'),'local_guarantee'=>$this->input->post('relative'),'order_status'=>'New',
+			'terms'=>$this->input->post('terms'),'gname'=>$this->input->post('guarantor_name'),'gemail'=>$this->input->post('guarantor_email'),'gphone'=>$this->input->post('guarantor_mobile'));
  		$descdata = "";
 		if( $this->session->userdata('ordId') != '')
 		{
 			
 		$updateid = $this->register_model->update2($maindata,$descdata,$this->session->userdata('ordId'));
-		
+		echo "hiii";
 		//$service=$this->services_model->load($this->input->post('visa'));			
 		//$maindata2=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$service->title,'no_of_visas'=>$this->input->post('quantity'),'local_guarantee '=>$this->input->post('relative'),'order_status'=>'New');
 		//$message = $this->load->view('frontend/mail/visa',$maindata2,TRUE);
@@ -199,7 +272,14 @@ class Checkout extends Visafront_Controller {
 		else
 		{
 		$insertid = $this->register_model->insert2($maindata,$descdata);	
-		$this->session->set_userdata('ordId', $insertid);	
+		$this->session->set_userdata('ordId', $insertid);
+		$fname=$this->input->post('fname');
+        foreach($fname as $key=>$val){
+        $maindata=array('order_id'=>@$this->session->userdata('ordId'),'applicant_firstname'=>$this->input->post('fname')[$key],'applicant_lastname'=>$this->input->post('lname')[$key],'nationality'=>$this->input->post('nationality')[$key],'birth_country'=>$this->input->post('birth_country')[$key],'dob'=>date("Y-m-d", strtotime($this->input->post('dob')[$key])),'gender'=>$this->input->post('gender')[$key],'passport_issue'=>date("Y-m-d", strtotime($this->input->post('issue_date')[$key])),'passport_expiry'=>date("Y-m-d", strtotime($this->input->post('exp_date')[$key])),'passport_no'=>$this->input->post('passport_number')[$key]);
+				//print_r($maindata);
+		$insertid1 = $this->register_model->insert3($maindata,$descdata);
+         redirect('checkout/process2');
+        }
 		//$service=$this->services_model->load($this->input->post('visa'));			
 		//$maindata2=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$service->title,'no_of_visas'=>$this->input->post('quantity'),'local_guarantee '=>$this->input->post('relative'),'order_status'=>'New');
 		//$message = $this->load->view('frontend/mail/visa',$maindata2,TRUE); 
@@ -208,15 +288,16 @@ class Checkout extends Visafront_Controller {
 		//$this->sendfromadmin( "Almjid Travels - VISA APPLICATION RECEIVED",$ackmessage);
 		}
 		
-		if($this->input->post('relative')=='Yes')
-		{
-		  redirect('checkout/process/2');
-		}
-		else
-		{
-			$this->session->set_userdata('ordId', '');
-		  redirect('checkout/process/3/msg');
-		}
+		// if($this->input->post('relative')=='Yes')
+		// {
+		//   redirect('checkout/process/2');
+		// }
+		// else
+		// {
+		// 	$this->session->set_userdata('ordId', '');
+		//   redirect('checkout/process/3/msg');
+		// }
+	
 		
 	}
 	

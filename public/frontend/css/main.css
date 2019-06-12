@@ -4084,6 +4084,9 @@ padding-bottom: 20px;
   padding-top: 15px;
   padding-bottom: 15px;
 }
+input.error,select.error{
+border: 1px solid red !important;
+}
 .general-info{
   font-size: 13px;
   line-height: 18px;
