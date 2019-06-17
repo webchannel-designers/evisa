@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Services extends Web_Controller {
+class Addons extends Web_Controller {
 
 	function __construct()
 
@@ -26,9 +26,10 @@ class Services extends Web_Controller {
 		
 		$this->load->model('location_model');
 
-		$this->load->model('services_model');	
+		$this->load->model('addons_model');	
 
 		$this->load->model('widgets_model');
+		$this->load->model('company_model');
 		
 		$this->load->model('types_model');	
 
@@ -40,16 +41,16 @@ class Services extends Web_Controller {
 
 	{
 
-		redirect('admin/services/lists');		
+		redirect('admin/addons/lists');		
 
 	}
 
 	
 
-	public function lists()
+	public function lists($id)
 
 	{
-	
+	    $cond=array('company_id'=>$id);
 
 		$this->load->library('pagination');
 
@@ -61,13 +62,13 @@ class Services extends Web_Controller {
 
 		$main['left']=$this->adminleftmenu();
 
-		$config['base_url'] = site_url('admin/services/lists/');
+		$config['base_url'] = site_url('admin/addons/lists/');
 
-		$config['total_rows'] = $this->services_model->get_pagination_count();
+		$config['total_rows'] = $this->addons_model->get_pagination_count($cond);
 
 		$config['per_page'] = '50';
 
-		$config['uri_segment'] = 4;
+		$config['uri_segment'] =  5;
 
 		$config['first_link'] = 'First';
 
@@ -79,17 +80,17 @@ class Services extends Web_Controller {
 
 		$this->pagination->initialize($config);
 
-		$content['contentfields'] = $this->services_model->get_fields();
+		$content['contentfields'] = $this->addons_model->get_fields();
 
 		$content['sortorders'] = array('asc'=>'Ascending','desc'=>'Descending');
 		
 		$content['contentcats'] = $this->servicecategory_model->get_array();
 		
-		$content['contents']=$this->services_model->get_pagination($config['per_page'],$this->uri->segment($config['uri_segment']),NULL,'sort_order ASC');
+		$content['contents']=$this->addons_model->get_pagination($config['per_page'],$this->uri->segment($config['uri_segment']),$cond,NULL,'sort_order ASC');
 				
 		$content['categories']=$this->servicecategory_model->get_idpair();
 		
-		$main['content']=$this->load->view('admin/services/product/lists',$content,true);
+		$main['content']=$this->load->view('admin/addons/lists',$content,true);
 
 		$this->load->view('admin/main',$main);
 
@@ -97,50 +98,11 @@ class Services extends Web_Controller {
 
 	function add()
 
-	{
-
-		$this->load->library('ckeditor');
-
-		$this->load->library('ckfinder');
-
-		$this->ckeditor->basePath = base_url('public/admin/ckeditor/');
-
-		$this->ckeditor->config['language'] = 'en';
-
-		$this->ckeditor->config['width'] = '100%';
-
-		$this->ckeditor->config['height'] = '200px';
-
-		//Add Ckfinder to Ckeditor
-
-		$this->ckfinder->SetupCKEditor($this->ckeditor,base_url('public/admin/ckfinder/'));
-
-		$this->form_validation->set_rules('title', 'Title', 'required');
-
-		$this->form_validation->set_rules('short_desc', 'Short Description', 'required');
-
-		$this->form_validation->set_rules('keywords', 'Keywords', '');
-
-		//$this->form_validation->set_rules('desc', 'Description', 'required');
-		
-		//$this->form_validation->set_rules('feat', 'Features', 'required');
-
-		$this->form_validation->set_rules('meta_desc', 'Meta Description', '');
-
-		$this->form_validation->set_rules('category_id', 'Category', 'required');
-		
-		//$this->form_validation->set_rules('make_id', 'Make', 'required');
-		
-		//$this->form_validation->set_rules('model_id', 'Model', 'required');
-		
-		//$this->form_validation->set_rules('location_id', 'Location', 'required');
-
-		//$this->form_validation->set_rules('status', 'Status', 'required');
-		
-		//$this->form_validation->set_rules('featured', 'Featured', 'required');
-
+	{		
+		$this->form_validation->set_rules('title', 'Title', 'required');	
+		$this->form_validation->set_rules('price', 'price', 'required');		
+		$this->form_validation->set_rules('company_id', 'Company', 'required');
 		$this->form_validation->set_message('required', 'required');
-
 		$this->form_validation->set_error_delimiters('<span class="red">(', ')</span>');
 
 		if ($this->form_validation->run() == FALSE)
@@ -155,7 +117,8 @@ class Services extends Web_Controller {
 
 			$main['left']=$this->adminleftmenu();
 
-			$add['contentcats'] = $this->servicecategory_model->get_array();
+			
+			$add['companies']=$this->company_model->get_array();
 			
 			//$add['suppliers'] = $this->types_model->get_active();
 			
@@ -167,98 +130,28 @@ class Services extends Web_Controller {
 
 			$add['widgets']=$this->widgets_model->get_rightwidgets();
 
-			$main['content']=$this->load->view('admin/services/product/add',$add,true);
+			$main['content']=$this->load->view('admin/addons/add',$add,true);
 
 			$this->load->view('admin/main',$main);
 
-		} else {
+		} else {			
 
-			$banner_image='';
+		
+			$maindata=array('name'=>$this->input->post('title'),'status'=>$this->input->post('status'),'company_id'=>$this->input->post('company_id'),'price'=>$this->input->post('price'));		
 
-			$content_image='';
-			
-			$pdf='';
-			
-			$config['upload_path'] = 'public/uploads/products';
-
-			$config['allowed_types'] = 'gif|jpg|png';
-
-			$this->load->library('upload', $config);
-
-			if($this->upload->do_upload('banner_image'))
-
-			{
-
-				$banner_imagedata=$this->upload->data();
-
-				$banner_image=$banner_imagedata['file_name'];
-
-			}
-
-			if($this->upload->do_upload('image'))
-
-			{
-
-				$contentimagedata=$this->upload->data();
-
-				$content_image=$contentimagedata['file_name'];
-
-			}
-			
-			if($this->upload->do_upload('pdf'))
-
-			{
-
-				$contentpdfdata=$this->upload->data();
-
-				$pdf=$contentpdfdata['file_name'];
-
-			}
-
-			$i=0;
-
-			$widgets=array();
-
-			if($this->input->post('widgets'))
-
-			foreach($this->input->post('widgets') as $widgetrow): $i++;
-
-				$widgets[]=$widgetrow.':'.$i;
-
-			endforeach;
-
-			$widgets = implode(',',$widgets);
-
-			$slug = $this->services_model->create_slug($this->input->post('title'));
-
-			$date_time = date("Y-m-d H:i:s");
-
-			if($this->input->post('date_time')!='')
-
-			{ 
-
-				$date_time = date("Y-m-d H:i:s", strtotime($this->input->post('date_time')));
-
-			}
-			$pid=implode(",",$this->input->post('category_id'));
-
-			$maindata=array('featured'=>$this->input->post('featured'),'status'=>$this->input->post('status'),'category_id'=>$pid,'slug'=>$slug,'widgets'=>$widgets);
-
-			$descdata=array('type'=>$this->input->post('type_id'),'title'=>$this->input->post('title'),'price'=>$this->input->post('price'),'short_desc'=>$this->input->post('short_desc'),'meta_desc'=>$this->input->post('meta_desc'),'keywords'=>$this->input->post('keywords'),'desc'=>$this->input->post('overview'),'specification'=>$this->input->post('specification'),'feat'=>$this->input->post('feat'),'banner_text'=>$this->input->post('banner_text'),'pdf'=>$pdf,'banner_image'=>$banner_image,'image'=>$content_image,'youtube'=>$this->input->post('youtube'));
-
-			$insertid=$this->services_model->insert($maindata,$descdata);
+			$insertid=$this->addons_model->insert($maindata,$descdata);
 
 			if($insertid){
 
-				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Content added Successfully.</p></div>');
+				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Addon added Successfully.</p></div>');
 
-				redirect('admin/services/lists');
+				redirect('admin/addons/add');
 
 			} else {
 
-				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Content not added.</p></div>');
+				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Addon not added.</p></div>');
 
-				redirect('admin/services/lists');
+				redirect('admin/addons/add');
 
 			}
 
@@ -270,7 +163,7 @@ class Services extends Web_Controller {
 	{
 		$add['models']=$this->model_model->load_model($this->input->post('make'));
 		$add['mode']=$this->input->post('model');
-		$this->load->view('admin/services/product/model',$add);//print_r($models);
+		$this->load->view('admin/addons/model',$add);//print_r($models);
 	}
 	
 	function load_make()
@@ -278,7 +171,7 @@ class Services extends Web_Controller {
 		
 		$add['makes']=$this->makes_model->get_active($this->input->post('category_id'));
 		$add['mode']=$this->input->post('make_id');
-		$this->load->view('admin/services/product/make',$add);			//print_r($models);
+		$this->load->view('admin/addons/make',$add);			//print_r($models);
 	}
 	
 	function load_type()
@@ -292,41 +185,13 @@ class Services extends Web_Controller {
 
 	{
 
-		$this->load->library('ckeditor');
-
-		$this->load->library('ckfinder');
-
-		$this->ckeditor->basePath = base_url('public/admin/ckeditor/');
-
-		$this->ckeditor->config['language'] = 'en';
-
-		$this->ckeditor->config['width'] = '100%';
-
-		$this->ckeditor->config['height'] = '200px';
-
-		//Add Ckfinder to Ckeditor
-
-		$this->ckfinder->SetupCKEditor($this->ckeditor,base_url('public/admin/ckfinder/'));
-
-		$this->form_validation->set_rules('title', 'Title', 'required');
-
-		$this->form_validation->set_rules('slug', 'Url Slug', 'required|callback_code_exists');
-
-		$this->form_validation->set_rules('short_desc', 'Short Description', 'required');
-
-		$this->form_validation->set_rules('keywords', 'Keywords', '');
-
-		//$this->form_validation->set_rules('desc', 'Description', 'required');
 		
-		//$this->form_validation->set_rules('feat', 'Features', 'required');
 
-		$this->form_validation->set_rules('meta_desc', 'Meta Description', '');
-
-		$this->form_validation->set_rules('category_id', 'Category', 'required');
-
-		$this->form_validation->set_rules('status', 'Status', 'required');
-		
-		//$this->form_validation->set_rules('featured', 'Featured', 'required');
+		$this->form_validation->set_rules('title', 'Title', 'required');	
+		$this->form_validation->set_rules('price', 'price', 'required');		
+		$this->form_validation->set_rules('company_id', 'Company', 'required');
+		$this->form_validation->set_message('required', 'required');
+		$this->form_validation->set_error_delimiters('<span class="red">(', ')</span>');
 
 		$this->form_validation->set_message('required', 'required');
 
@@ -344,103 +209,37 @@ class Services extends Web_Controller {
 
 			$main['left']=$this->adminleftmenu();
 
-			$edit['return']=$return;
+			$edit['return']=$return;	
+			$edit['companies']=$this->company_model->get_array();
 
-			$edit['contentcats'] = $this->servicecategory_model->get_array();
-			
-			//$edit['suppliers']=$this->types_model->get_active();
-			
-			//$edit['makes'] = $this->makes_model->get_active();
-			
-			//$edit['models'] = $this->model_model->get_active();
-			
-			//$edit['locations'] = $this->location_model->get_active();
-
-			$edit['content']= $this->services_model->load($id);
+			$edit['content']= $this->addons_model->load($id);
 
 			$edit['widgets']=$this->widgets_model->get_rightwidgets();
 
-			$main['content']=$this->load->view('admin/services/product/edit',$edit,true);
+			$main['content']=$this->load->view('admin/addons/edit',$edit,true);
 
 			$this->load->view('admin/main',$main);
 
 		} else {
 
-			$new_widgets=$this->input->post('widgets');
-
-			$contentrow=$this->services_model->load($id);
-
-			$widgets=$this->get_editwidgets($contentrow,$new_widgets);	
-
-			$slug=$this->services_model->update_slug($this->input->post('slug'),$id);
-
-			$date_time = date("Y-m-d H:i:s");
-
-			if($this->input->post('date_time')!='')
-
-			{ 
-
-				$date_time = date("Y-m-d H:i:s", strtotime($this->input->post('date_time')));
-
-			}
-			//print_r($this->input->post('category_id'));exit;
-			$pid=implode(",",$this->input->post('category_id'));
-
-			$maindata=array('featured'=>$this->input->post('featured'),'status'=>$this->input->post('status'),'category_id'=>$pid,'slug'=>$slug,'widgets'=>$widgets);
-
-			$descdata=array('type'=>$this->input->post('type_id'),'title'=>$this->input->post('title'),'price'=>$this->input->post('price'),'short_desc'=>$this->input->post('short_desc'),'meta_desc'=>$this->input->post('meta_desc'),'keywords'=>$this->input->post('keywords'),'desc'=>$this->input->post('overview'),'specification'=>$this->input->post('specification'),'feat'=>$this->input->post('feat'),'banner_text'=>$this->input->post('banner_text'),'youtube'=>$this->input->post('youtube'));
-
-			$config['upload_path'] = 'public/uploads/products';
-
-			$config['allowed_types'] = 'gif|jpg|png|pdf';
-
-			$this->load->library('upload', $config);
-
-			if($this->upload->do_upload('banner_image'))
-
-			{
-
-				$banner_imagedata=$this->upload->data();
-
-				$descdata['banner_image']=$banner_imagedata['file_name'];
-
-			}
-
-			if($this->upload->do_upload('image'))
-
-			{
-
-				$contentimagedata=$this->upload->data();
-
-				$descdata['image']=$contentimagedata['file_name'];
-
-			}
 			
-			if($this->upload->do_upload('pdf'))
+			$maindata=array('name'=>$this->input->post('title'),'status'=>$this->input->post('status'),'company_id'=>$this->input->post('company_id'),'price'=>$this->input->post('price'));
+		
+			$config['upload_path'] = 'public/uploads/products';			
 
-			{
-
-				$contentpdfdata=$this->upload->data();
-				
-				//print_r($contentpdfdata);exit;
-
-				$descdata['pdf']=$contentpdfdata['file_name'];
-
-			}
-
-			$loginid=$this->services_model->update($maindata,$descdata,$id);
+			$loginid=$this->addons_model->update($maindata,$id);
 
 			if($loginid){
 
-				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Content updated Successfully.</p></div>');
+				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Addons updated Successfully.</p></div>');
 
-				redirect('admin/services/lists/'.$return);
+				redirect('admin/addons/lists/'.$return);
 
 			} else {
 
-				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Content not updated.</p></div>');
+				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Addons not updated.</p></div>');
 
-				redirect('admin/services/lists/'.$return);
+				redirect('admin/addons/lists/'.$return);
 
 			}
 
@@ -540,11 +339,11 @@ class Services extends Web_Controller {
 
 		$cond=array('id'=>$id);				
 
-		$content['content'] = $this->services_model->get_row_cond($cond);				
+		$content['content'] = $this->addons_model->get_row_cond($cond);				
 
 		$content['widgets'] = $this->widgets_model->get_idpair();		
 
-		$main['content']=$this->load->view('admin/services/content/widget/lists',$content,true);
+		$main['content']=$this->load->view('admin/addons/content/widget/lists',$content,true);
 
 		$this->load->view('admin/main',$main);
 
@@ -572,7 +371,7 @@ class Services extends Web_Controller {
 
 			$data=array('widgets'=>$sort_order);
 
-			$loginid=$this->services_model->update($data,array(),$contentid);			
+			$loginid=$this->addons_model->update($data,array(),$contentid);			
 
 		}		
 
@@ -586,7 +385,7 @@ class Services extends Web_Controller {
 
 		}
 
-		redirect('admin/services/lists/'.$this->input->post('return'));
+		redirect('admin/addons/lists/'.$this->input->post('return'));
 
 	}
 
@@ -594,19 +393,19 @@ class Services extends Web_Controller {
 
 	{
 
-		$loginid=$this->services_model->delete($id);
+		$loginid=$this->addons_model->delete($id);
 
 		if($loginid){
 
 			$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Content deleted Successfully.</p></div>');
 
-			redirect('admin/services/lists/'.$return);
+			redirect('admin/addons/lists/'.$return);
 
 		} else {
 
 			$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Content not deleted.</p></div>');
 
-			redirect('admin/services/lists/'.$return);
+			redirect('admin/addons/lists/'.$return);
 
 		}
 
@@ -620,7 +419,7 @@ class Services extends Web_Controller {
 
 		$ids=$this->input->post('id');
 		
-		$sort_orders=$this->input->post('sort_order');
+		$sort_orders=$this->input->post('orderby');
 
 		$loginid=false;
 		
@@ -630,7 +429,7 @@ class Services extends Web_Controller {
 
 				$data=array('sort_order'=>$sort_order);
 
-				$loginid=$this->services_model->update($data,array(),$id);				
+				$loginid=$this->addons_model->update($data,array(),$id);				
 
 			endforeach;			
 
@@ -654,7 +453,7 @@ class Services extends Web_Controller {
 
 			$this->session->unset_userdata($newdata);
 
-			redirect('admin/services/lists/');
+			redirect('admin/addons/lists/');
 
 		}
 
@@ -698,7 +497,7 @@ class Services extends Web_Controller {
 
 			}
 
-			redirect('admin/services/lists/');
+			redirect('admin/addons/lists/');
 
 		}
 
@@ -716,7 +515,7 @@ class Services extends Web_Controller {
 
 				$data=array('status'=>$status);
 
-				$loginid=$this->services_model->update($data,array(),$id);				
+				$loginid=$this->addons_model->update($data,array(),$id);				
 
 			endforeach;
 
@@ -734,7 +533,7 @@ class Services extends Web_Controller {
 
 				$data=array('featured'=>$fstatus);
 
-				$loginid=$this->services_model->update($data,array(),$id);				
+				$loginid=$this->addons_model->update($data,array(),$id);				
 
 			endforeach;
 
@@ -751,7 +550,7 @@ class Services extends Web_Controller {
 
 			foreach($ids as $id):
 
-				$loginid=$this->services_model->delete($id);				
+				$loginid=$this->addons_model->delete($id);				
 
 			endforeach;
 
@@ -769,7 +568,7 @@ class Services extends Web_Controller {
 
 		}
 
-		redirect('admin/services/lists/'.$this->input->post('return'));
+		redirect('admin/addons/lists/'.$this->input->post('return'));
 
 	}
 
@@ -781,7 +580,7 @@ class Services extends Web_Controller {
 
 		$id= $this->input->post('id');
 
-		if ($this->services_model->code_exists($code,$id))
+		if ($this->addons_model->code_exists($code,$id))
 
 		{
 
@@ -817,7 +616,7 @@ class Services extends Web_Controller {
 
 		$main['left']=$this->adminleftmenu();
 
-		$config['base_url'] = site_url('admin/services/categories/');
+		$config['base_url'] = site_url('admin/addons/categories/');
 
 		$config['total_rows'] = $this->servicecategory_model->get_pagination_count();
 
@@ -839,7 +638,7 @@ class Services extends Web_Controller {
 
 		$content['categories']=$this->servicecategory_model->get_idpair();
 
-		$main['content']=$this->load->view('admin/services/category/lists',$content,true);
+		$main['content']=$this->load->view('admin/addons/category/lists',$content,true);
 
 		$this->load->view('admin/main',$main);
 
@@ -895,7 +694,7 @@ class Services extends Web_Controller {
 
 			$add['contentcats'] = $this->servicecategory_model->get_array();
 
-			$main['content']=$this->load->view('admin/services/category/add',$add,true);
+			$main['content']=$this->load->view('admin/addons/category/add',$add,true);
 
 			$this->load->view('admin/main',$main);
 
@@ -959,13 +758,13 @@ class Services extends Web_Controller {
 
 				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Product category added Successfully.</p></div>');
 
-				redirect('admin/services/categories');
+				redirect('admin/addons/categories');
 
 			} else {
 
 				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Product category not added.</p></div>');
 
-				redirect('admin/services/categories');
+				redirect('admin/addons/categories');
 
 			}
 
@@ -1030,7 +829,7 @@ class Services extends Web_Controller {
 
 			$edit['contentcats'] = $this->servicecategory_model->get_array();
 
-			$main['content']=$this->load->view('admin/services/category/edit',$edit,true);
+			$main['content']=$this->load->view('admin/addons/category/edit',$edit,true);
 
 			$this->load->view('admin/main',$main);
 
@@ -1085,13 +884,13 @@ class Services extends Web_Controller {
 
 				$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Product category updated Successfully.</p></div>');
 
-				redirect('admin/services/categories/'.$return);
+				redirect('admin/addons/categories/'.$return);
 
 			} else {
 
 				$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Product category not updated.</p></div>');
 
-				redirect('admin/services/categories/'.$return);
+				redirect('admin/addons/categories/'.$return);
 
 			}
 
@@ -1117,7 +916,7 @@ class Services extends Web_Controller {
 
 		$content['widgets'] = $this->widgets_model->get_idpair();		
 
-		$main['content']=$this->load->view('admin/services/category/widget/lists',$content,true);
+		$main['content']=$this->load->view('admin/addons/category/widget/lists',$content,true);
 
 		$this->load->view('admin/main',$main);
 
@@ -1159,7 +958,7 @@ class Services extends Web_Controller {
 
 		}
 
-		redirect('admin/services/lists/'.$this->input->post('return'));
+		redirect('admin/addons/lists/'.$this->input->post('return'));
 
 	}
 
@@ -1175,13 +974,13 @@ class Services extends Web_Controller {
 
 			$this->session->set_flashdata('message', '<div class="n_ok flash_messages"><p>Product category deleted Successfully.</p></div>');
 
-			redirect('admin/services/categories/'.$return);
+			redirect('admin/addons/categories/'.$return);
 
 		} else {
 
 			$this->session->set_flashdata('message', '<div class="n_error flash_messages"><p>Error!! - Product category not deleted.</p></div>');
 
-			redirect('admin/services/categories/'.$return);
+			redirect('admin/addons/categories/'.$return);
 
 		}
 
@@ -1266,7 +1065,7 @@ class Services extends Web_Controller {
 
 		}
 
-		redirect('admin/services/categories/'.$this->input->post('return'));
+		redirect('admin/addons/categories/'.$this->input->post('return'));
 
 	}
 

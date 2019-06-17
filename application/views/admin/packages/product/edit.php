@@ -20,7 +20,7 @@ $cat=explode(",",$content->category_id);
 
 	<div class="h_title">Edit Content</div>	
 
-	<?php echo form_open_multipart('admin/services/edit/'.$content->id.'/'.$return,array('id'=>'productfrm')); ?>
+	<?php echo form_open_multipart('admin/packages/edit/'.$content->id.'/'.$return,array('id'=>'productfrm')); ?>
 
 	<input id="id" name="id" type="hidden" value="<?php echo $content->id; ?>" />	
 
@@ -39,6 +39,32 @@ $cat=explode(",",$content->category_id);
 			</select>
 
 		</div>
+
+  <div class="element">
+
+    <label for="category_id">Company
+
+      <?php if(form_error('company_id')){ $err=' err'; echo form_error('company_id'); } else { $err=''; ?>
+
+      <span> (required)</span>
+
+      <?php } ?>
+
+    </label>
+
+    <select name="company_id" id="company_id" class="text" >
+    
+    <option value="">Company</option>
+
+      <?php foreach($companies as $comp): ?>
+
+      <option value="<?php echo $comp['id']; ?>" <?php if($comp['id']==$content->company_id) echo "selected"; ?>><?php echo $comp['name']; ?></option>
+
+      <?php endforeach; ?>
+
+    </select>
+
+  </div>
         
         <!--<div class="element">
 
@@ -516,7 +542,7 @@ $cat=explode(",",$content->category_id);
 		</div>
 		<div class="entry">
 
-			<button type="submit" class="add">Save</button><a class="button cancel" href="<?php echo site_url('admin/services/lists'); ?>">Cancel</a>
+			<button type="submit" class="add">Save</button><a class="button cancel" href="<?php echo site_url('admin/packages/lists'); ?>">Cancel</a>
 
 		</div>
 

@@ -9,8 +9,8 @@ if($this->uri->segment(4)==""){
 }
 ?>
 <div class="full_w">
-  <div class="h_title">Manage Services - List</div>
-  <?php echo $this->session->flashdata('message'); ?> <?php echo form_open('admin/services/actions'); ?>
+  <div class="h_title">Manage Packages - List</div>
+  <?php echo $this->session->flashdata('message'); ?> <?php echo form_open('admin/packages/actions'); ?>
   <div class="entry">
     <input class="button" type="submit" name="enable" value="Enable"  />
     <input class="button" type="submit" name="disable" value="Disable"  />
@@ -82,7 +82,7 @@ if($this->uri->segment(4)==""){
 		<td><?php echo substr($catname,0,100); ?></td>
         <td><?php echo $activearr[$content['status']]; ?></td>
          <td><?php echo $activearr[$content['featured']]; ?></td>
-        <td nowrap="nowrap"><a href="<?php echo site_url('admin/services/edit/'.$content['id'].'/'.$return); ?>" class="table-icon edit" title="Edit"></a> <a href="<?php echo site_url('admin/services/contentwidgets/'.$content['id'].'/'.$return); ?>" class="table-icon widgets" title="Sort Widgets"></a> <a href="<?php echo site_url('admin/services/delete/'.$content['id'].'/'.$return); ?>" class="table-icon delete" title="Delete" onclick="return confirmBox();"></a></td>
+        <td nowrap="nowrap"><a href="<?php echo site_url('admin/packages/edit/'.$content['id'].'/'.$return); ?>" class="table-icon edit" title="Edit"></a> <a href="<?php echo site_url('admin/packages/contentwidgets/'.$content['id'].'/'.$return); ?>" class="table-icon widgets" title="Sort Widgets"></a> <a href="<?php echo site_url('admin/packages/delete/'.$content['id'].'/'.$return); ?>" class="table-icon delete" title="Delete" onclick="return confirmBox();"></a></td>
       </tr>
       <?php endforeach; ?>
     </tbody>
@@ -91,5 +91,5 @@ if($this->uri->segment(4)==""){
   <div class="entry">
     <div class="pagination"> <?php echo $this->pagination->create_links(); ?> </div>
     <div class="sep"></div>
-    <a class="button add" href="<?php echo site_url('admin/services/add'); ?>">Add New Service</a> </div>
+    <a class="button add" href="<?php echo site_url('admin/packages/add'); ?>">Add New Service</a> </div>
 </div>
