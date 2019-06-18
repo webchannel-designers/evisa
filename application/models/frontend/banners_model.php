@@ -19,8 +19,9 @@ class Banners_model extends CI_Model {
 		$query = $this->db->get();
         return $query->result_array();
 	}
-	function get_active()
-	{
+	function get_active($cond='')
+	{ 
+		$this->db->where($cond);
 		$this->db->where('status','Y');
 		$this->db->from($this->table_name);
 		$this->db->join($this->desc_table_name, "$this->desc_table_name.$this->foreign_key = $this->table_name.$this->primary_key");

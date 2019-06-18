@@ -15,7 +15,7 @@ class Countries_model extends CI_Model {
 		$query = $this->db->get();
         return $query->result_array();
 	}
-	function get_active()
+	function get_active() 
 	{
 		$this->db->where('status','Y');
 		$this->db->order_by('name','ASC');
@@ -49,7 +49,13 @@ class Countries_model extends CI_Model {
 		$query = $this->db->get();
         return $query->row();
 	}
-	
+	function get_row_cond_name($cond)
+	{
+		$this->db->where($cond);
+		$this->db->from($this->table_name);$this->db->where('language',$this->session->userdata('front_language'));
+		$query = $this->db->get();
+        return $query->row()->name;
+	}
 	function insert($maindata,$descdata)
 	{
 		$this->db->insert($this->table_name,$maindata);

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Services_model extends CI_Model {
+class Companies_model extends CI_Model {
 
     function __construct()
 
@@ -10,7 +10,7 @@ class Services_model extends CI_Model {
 
 		$this->lang_table_name='languages';
 
-		$this->table_name='services';
+		$this->table_name='companies';
 
 		$this->desc_table_name='services_desc';
 
@@ -205,7 +205,7 @@ class Services_model extends CI_Model {
 	}
 	
 
-	function get_row_cond($cond)
+	function get_row_cond($cond='')
 
 	{
 
@@ -213,11 +213,11 @@ class Services_model extends CI_Model {
 
 		$this->db->from($this->table_name);
 
-		$this->db->join($this->desc_table_name, "$this->desc_table_name.$this->foreign_key = $this->table_name.$this->primary_key");
+		// $this->db->join($this->desc_table_name, "$this->desc_table_name.$this->foreign_key = $this->table_name.$this->primary_key");
 
-		$this->db->where('language','en');
+		// $this->db->where('language','en');
 		
-		$this->db->order_by('sort_order','ASC');
+		// $this->db->order_by('sort_order','ASC');
 
 		$query = $this->db->get();
 		

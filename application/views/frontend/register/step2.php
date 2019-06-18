@@ -1,5 +1,7 @@
 <?php  $coid=$this->session->userdata('couid');
-print_r($frmdata);
+//print_r($frmdata);
+//print_r($appdata);
+
 ?>
 <section class="section-spotlight">
       <div class="home-slider owl-carousel">     
@@ -125,8 +127,7 @@ print_r($frmdata);
                       <h3><i class="fa fa-users" aria-hidden="true"></i> Applicants</h3>
                       <a href="" class="btn-edit"><i class="fa fa-pencil" aria-hidden="true"></i> Modify</a>
                     </div>
-                    <div class="col-md-12">
-                      
+                    <div class="col-md-12">                    
 
                       <div class="table-responsive">
                         <table>
@@ -142,30 +143,21 @@ print_r($frmdata);
                             <td>Passport Expiration</td>
                             <td>VIsa Type</td>
                           </tr>
+                          <?php foreach($appdata as $apdata){ ?>
                           <tr>
-                            <td>asdasd</td>
-                            <td>hfghfhg</td>
-                            <td>Indian</td>
-                            <td>Apr-3-2019</td>
-                            <td>India</td>
-                            <td>Male</td>
-                            <td>34534554</td>
-                            <td>May-6-2008</td>
-                            <td>Jun-9-2024</td>
-                            <td>Tourist Visa - 60 days, Single Entry</td>
+                            <td><?php echo $apdata->applicant_firstname; ?></td>
+                            <td><?php echo $apdata->applicant_lastname; ?></td>
+                            <td><?php echo $this->countries_model->get_row_cond_name(array("id"=>$apdata->nationality)); ?></td>
+                            <td><?php echo $apdata->dob; ?></td>
+                            <td><?php echo $this->countries_model->get_row_cond_name(array("id"=>$apdata->birth_country)); ?></td>
+                            <td><?php echo $apdata->gender; ?></td>
+                            <td><?php echo $apdata->passport_no; ?></td>
+                            <td><?php echo $apdata->passport_issue ?></td>
+                            <td><?php echo $apdata->passport_expiry ?></td>
+                            <td><?php echo str_replace('-', " ", $apdata->slug); ?></td>
                           </tr>
-                          <tr>
-                            <td>bvnvbn</td>
-                            <td>tytyt</td>
-                            <td>Indian</td>
-                            <td>Jan-3-2019</td>
-                            <td>India</td>
-                            <td>Male</td>
-                            <td>7656</td>
-                            <td>Sep-6-2008</td>
-                            <td>Jun-9-2024</td>
-                            <td>Tourist Visa - 60 days, Single Entry</td>
-                          </tr>
+                        <?php } ?>
+                          
                         </table>
                       </div>
 
@@ -189,16 +181,16 @@ print_r($frmdata);
                         </tr>
                         <tr>
                           <td>Visa Cost</td>
-                          <td>UYU 7345.10</td>
+                          <td>AED <?php echo $frmdata->visa_cost; ?></td>
                         </tr>
                         <tr>
-                          <td>Service Fee</td>
-                          <td>UYU 2596.76</td>
+                          <td>Process Fee</td>
+                          <td>AED <?php echo $frmdata->process_fee; ?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                           <td>Rush Fee</td>
                           <td>UYU 2225.78</td>
-                        </tr>
+                        </tr> -->
                       </table>
                     </div>
 
@@ -213,7 +205,7 @@ print_r($frmdata);
                   </div>
                   <div class="col-md-6">
                     <div class="payment-total">
-                      UYU 12,167.64
+                    AED <?php echo $frmdata->order_total; ?>
                     </div>
                   </div>
                 </div>

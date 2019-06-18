@@ -19,6 +19,7 @@ class Banners extends Web_Controller {
 		}
 
 		$this->load->model('banners_model');	
+		$this->load->model('company_model');
 
 	}
 
@@ -118,7 +119,9 @@ class Banners extends Web_Controller {
 
 			$main['left']=$this->adminleftmenu();
 
-			$main['content']=$this->load->view('admin/banners/add','',true);
+			$main['companies']=$this->company_model->get_array();
+
+			$main['content']=$this->load->view('admin/banners/add',$main,true);
 
 			$this->load->view('admin/main',$main);
 
@@ -154,7 +157,7 @@ class Banners extends Web_Controller {
 
 			}			
 
-			$maindata=array('status'=>$this->input->post('status'));
+			$maindata=array('status'=>$this->input->post('status'),'company_id'=>$this->input->post('company_id'));
 
 			$descdata=array('title'=>$this->input->post('title'),'link'=>$this->input->post('url'),'short_desc'=>$this->input->post('short_desc'),'icon'=>$icon,'image'=>$image);
 
@@ -223,6 +226,7 @@ class Banners extends Web_Controller {
 			$main['left']=$this->adminleftmenu();
 
 			$edit['return']=$return;
+			$edit['companies']=$this->company_model->get_array();
 
 			$edit['banner']= $this->banners_model->load($id);
 
@@ -232,7 +236,7 @@ class Banners extends Web_Controller {
 
 		} else {
 
-			$maindata=array('status'=>$this->input->post('status'));
+			$maindata=array('status'=>$this->input->post('status'),'company_id'=>$this->input->post('company_id'));
 
 			$descdata=array('title'=>$this->input->post('title'),'link'=>$this->input->post('url'),'short_desc'=>$this->input->post('short_desc'));
 

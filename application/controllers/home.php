@@ -11,18 +11,31 @@ class Home extends Visafront_Controller {
 		//$this->load->model('frontend/team_model');
 		$this->load->model('frontend/servicecategory_model');
 		$this->load->model('frontend/services_model');
+		$this->load->model('frontend/companies_model');
 		$this->load->model('frontend/contentcategory_model');
 		$this->load->model('frontend/friends_model');
 		$this->load->model('frontend/productcategory_model');
 		$this->load->model('frontend/products_model');
-		
+		if(isset($_GET['cid']))
+		{
+		$comp_details=$this->companies_model->get_row_cond(array('ref_id'=>$_GET['cid']));		
+		}
+		else{
+			$comp_details="";
+		   }
+			
+		$this->session->set_userdata('comp_id',$comp_details->id);
+		$this->session->set_userdata('ref_id',$_GET['cid']);
+
+		$id=$this->session->userdata('comp_id');
 		$main['meta']=$this->frontmetahead();
 					
         $home['phonenumber']=$this->settings_model->get_row_cond(array('settingvalue'=>$this->alphasettings['PHONE_SLUG']));
 		
 		//$home['teams']=$this->team_model->get_row_cond(array('category_id'=>1));
+		$cond=array('company_id'=>$id);
 		
-		$home['services']=$this->services_model->get_featured_active();
+		$home['services']=$this->services_model->get_featured_active($cond);
 		
 		$home['featured']=$this->products_model->get_featured_active();
 		
@@ -49,7 +62,7 @@ class Home extends Visafront_Controller {
 		
 		//$home['events']=$this->events_model->get_array_limit(6);
 		
-	  	$home['banners']=$this->banners_model->get_active();
+	  	$home['banners']=$this->banners_model->get_active($cond);
 		
 	  	$main['contents']=$this->load->view('frontend/content/home',$home,true);
 		//$main['contents']=$this->frontcontent($frontcontent,false);
@@ -59,7 +72,8 @@ class Home extends Visafront_Controller {
 		$main['page']="home";
 		
 		$this->load->view('frontend/main',$main);
-	}
+		}
+
 	public function do_logout(){
 		$newdata = array(
 			   'userid'  => '',

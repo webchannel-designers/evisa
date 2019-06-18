@@ -304,8 +304,12 @@ function populate1(val)
                 $('#tot').html(data);
                 var process_time = $("input[name='pros_time']:checked"). val();               
                  tot=parseInt(process_time)+parseInt($('#qty').val())*parseInt($('#amt').val());
+               
   document.getElementById('gtotal').innerHTML='AED '+tot;
   document.getElementById('gtot').value=tot;
+  visa_fee=parseInt($('#qty').val())*parseInt($('#amt').val());
+  document.getElementById('visa_fee').value=visa_fee;
+
               }
             });
       return false;     
@@ -349,6 +353,8 @@ $("input#qty").prop('disabled', true);
 		tot=parseInt($('#qty').val())*parseInt($('#amt').val());
   document.getElementById('gtotal').innerHTML='AED '+tot;
   document.getElementById('gtot').value=tot;
+  visa_fee=parseInt($('#qty').val())*parseInt($('#amt').val());
+  document.getElementById('visa_fee').value=visa_fee;
 });
     $( "#small" ).click(function() {
 		tot=parseInt($('#qty').val())*parseInt($('#amt').val());
@@ -905,6 +911,8 @@ function getform7()
                  tot=parseInt(process_time)+parseInt($('#qty').val())*parseInt($('#amt').val());
   document.getElementById('gtotal').innerHTML='AED '+tot;
   document.getElementById('gtot').value=tot; 
+  visa_fee=parseInt($('#qty').val())*parseInt($('#amt').val());
+  document.getElementById('visa_fee').value=visa_fee;
   });
   if($( ".datepicker" ).length){
     $( ".datepicker" ).datepicker({

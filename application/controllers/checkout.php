@@ -200,8 +200,12 @@ class Checkout extends Visafront_Controller {
  		if($this->session->userdata('ordId') != '')
 		{
 			$home['frmdata']=$frmdata=$this->register_model->load2($this->session->userdata('ordId'));
+			$home['appdata']=$appdata=$this->register_model->load4($this->session->userdata('ordId'));
+
 			//$p['nationality']=$frmdata->applicant_nationality;
-		}$home['p']=$p;
+		}
+
+		$home['p']=$p;
 		$pagemeta=$this->pages_model->get_row_cond(array('key'=>'register'));
 		if($pagemeta->title!=''){$this->pagetitle=$pagemeta->title;}
 		if($pagemeta->short_desc!=''){$this->desc=$pagemeta->short_desc; }
@@ -254,14 +258,14 @@ class Checkout extends Visafront_Controller {
 		$vatper=5;		
 		$vatamt=$total*5/100;
 
-		$maindata=array('travel_date'=>$date,'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa_type'),'no_of_visas'=>$this->input->post('quantity'),'email'=>$this->input->post('email'),'mobile'=>$this->input->post('mobile'),'local_guarantee'=>$this->input->post('relative'),'order_status'=>'New',
+		$maindata=array('travel_date'=>$date,'visa_cost'=>$this->input->post('visa_fee'),'process_fee'=>$this->input->post('pros_time'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$this->input->post('visa_type'),'no_of_visas'=>$this->input->post('quantity'),'email'=>$this->input->post('email'),'mobile'=>$this->input->post('mobile'),'local_guarantee'=>$this->input->post('relative'),'order_status'=>'New',
 			'terms'=>$this->input->post('terms'),'gname'=>$this->input->post('guarantor_name'),'gemail'=>$this->input->post('guarantor_email'),'gphone'=>$this->input->post('guarantor_mobile'));
  		$descdata = "";
 		if( $this->session->userdata('ordId') != '')
 		{
 			
 		$updateid = $this->register_model->update2($maindata,$descdata,$this->session->userdata('ordId'));
-		echo "hiii";
+		
 		//$service=$this->services_model->load($this->input->post('visa'));			
 		//$maindata2=array('travel_date'=>$date,'applicant_nationality'=>$this->input->post('nationality'),'residing_country'=>$this->input->post('country'),'order_total'=>$total,'vat_percentage'=>$vatper,'vat_amount'=>$vatamt,'visa_type'=>$service->title,'no_of_visas'=>$this->input->post('quantity'),'local_guarantee '=>$this->input->post('relative'),'order_status'=>'New');
 		//$message = $this->load->view('frontend/mail/visa',$maindata2,TRUE);

@@ -3,6 +3,31 @@
   <?php echo form_open_multipart('admin/banners/edit/'.$banner->id.'/'.$return); ?>
   <input id="id" name="id" type="hidden" value="<?php echo $banner->id; ?>" />
   <div class="element">
+
+    <label for="category_id">Company
+
+      <?php if(form_error('company_id')){ $err=' err'; echo form_error('company_id'); } else { $err=''; ?>
+
+      <span> (required)</span>
+
+      <?php } ?>
+
+    </label>
+
+    <select name="company_id" id="company_id" class="text" >
+    
+    <option value="">Company</option>
+
+      <?php foreach($companies as $comp): ?>
+
+      <option value="<?php echo $comp['id']; ?>" <?php if($comp['id']==$banner->company_id) echo "selected" ;?>><?php echo $comp['name']; ?></option>
+
+      <?php endforeach; ?>
+
+    </select>
+
+  </div> 
+  <div class="element">
     <label for="title">Title (<?php echo $this->languagesarr[$this->session->userdata('admin_language')]?>)
       <?php if(form_error('title')){ $err=' err'; echo form_error('title'); } else { $err=''; ?>
       <span> (required)</span>

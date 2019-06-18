@@ -102,13 +102,13 @@ class Register_model extends CI_Model {
 
 		$id=$this->db->escape_str($id);
 
-		$cond=array('order_id'=>$id);
+		$cond=array('visa_order_master.order_id'=>$id);
 
 		$this->db->where($cond);
 
 		$this->db->from('visa_order_master');
 
-		//$this->db->join($this->desc_table_name, "$this->desc_table_name.$this->foreign_key = $this->table_name.$this->primary_key");
+		//$this->db->join("visa_order_details", "visa_order_details.order_id = visa_order_master.order_id");
 
 		//$this->db->where('language',$this->session->userdata('admin_language'));
 
@@ -119,7 +119,30 @@ class Register_model extends CI_Model {
         return $query->row();
 
 	}
-	
+	function load4($id)
+
+	{
+
+		$id=$this->db->escape_str($id);
+
+		$cond=array('visa_order_master.order_id'=>$id);
+
+		$this->db->where($cond);
+
+		$this->db->from('visa_order_master');
+
+		$this->db->join('visa_order_details', "visa_order_details.order_id = visa_order_master.order_id");
+        $this->db->join('services', "services.id = visa_order_master.visa_type");
+      
+		//$this->db->where('language',$this->session->userdata('admin_language'));
+
+		$query = $this->db->get();
+		
+		//echo $this->db->last_query();
+
+        return $query->result();
+
+	}
 	function load3($id)
 
 	{
